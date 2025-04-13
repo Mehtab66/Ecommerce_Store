@@ -1,8 +1,7 @@
 import {  createUserWithEmailAndPassword,signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup  } from 'firebase/auth';
 import { auth, db } from '../config/firebase';
-import { collection, addDoc, getDoc, doc } from "firebase/firestore"; 
+import { collection, addDoc, getDoc, doc ,setDoc} from "firebase/firestore"; 
 const provider = new GoogleAuthProvider();
-
 //Register User using EMmail and Password
 export const registerUser = async (email, password, name) => {
   try {
@@ -50,24 +49,21 @@ export const loginUser = async (email, password) => {
 export const GoogleAuth = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
-    const checkUser = doc(db, "users", result.user.email); // Reference to user doc
-    const snapshot = await getDoc(checkUser); // Get the document
+   const checkUser = doc(db, "users", result.user.uid);
+const snapshot = await getDoc(checkUser);
 
-    console.log("User Firestore snapshot:", snapshot);
-
-    if (!snapshot.exists()) {
-      // If user doesn't exist, create one
-      await addDoc(collection(db, "users"), {
-        id: result.user.uid,
-        email: result.user.email,
-        name: result.user.displayName || "",
-        role: "user",
-        createdAt: new Date(),
-      });
-      console.log("New user added to Firestore");
-    } else {
-      console.log("User already exists in Firestore:", snapshot.data());
-    }
+if (!snapshot.exists()) {
+  await setDoc(doc(db, "users", result.user.uid), {
+    id: result.user.uid,
+    email: result.user.email,
+    name: result.user.displayName || "",
+    role: "user",
+    createdAt: new Date(),
+  });
+  console.log("New user added to Firestore");
+} else {
+  console.log("User already exists in Firestore:", snapshot.data());
+}
 
     return snapshot;
   } catch (error) {

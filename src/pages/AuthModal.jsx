@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Mail, Lock, User, Globe } from "lucide-react";
 import { registerUser, GoogleAuth, loginUser } from "../lib/authService";
+import {useNavigate} from "react-router-dom";
 export default function LoginSignupModal({ open, tab: initialTab, onClose }) {
   const [tab, setTab] = useState(initialTab);
   const [formData, setFormData] = useState({
@@ -8,13 +9,14 @@ export default function LoginSignupModal({ open, tab: initialTab, onClose }) {
     email: "",
     password: "",
   });
-
+const navigate=useNavigate()
   useEffect(() => {
     setTab(initialTab); // Update when prop changes
   }, [initialTab]);
 
   const handleGoogleLogin = () => {
     GoogleAuth();
+    navigate('/dashboard')
   };
 
   const handleChange = (e) => {
@@ -25,7 +27,16 @@ export default function LoginSignupModal({ open, tab: initialTab, onClose }) {
     e.preventDefault();
     if (tab === "login") {
       console.log("Logging in with:", formData);
-      await loginUser(formData.email, formData.password);
+      const response = await loginUser(formData.email, formData.password);
+      if (response) {
+        console.log("Login successful:", response);
+        onClose();  
+        navigate('/dashboard')
+
+      } else {
+        console.error("Login failed");
+      }
+
     } else {
       console.log("Signing up with:", formData);
       await registerUser(formData.email, formData.password, formData.name);
