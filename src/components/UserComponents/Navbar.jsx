@@ -4,6 +4,9 @@ import IconButton from '@mui/material/IconButton';
 import { LeftMenu } from './LeftMenu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -16,30 +19,54 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Pass control to LeftMenu */}
       <LeftMenu mobileOpen={mobileOpen} toggleDrawer={handleDrawerToggle} />
 
       <div
-        className={`p-2 flex items-center justify-between ${
+        className={`px-4 py-3 flex items-center justify-between shadow-md ${
           isMobile ? '' : 'ml-62'
         }`}
         style={{
-          backgroundColor: '#2D3E50', // Deep navy color for a clean, professional look
+          backgroundColor: '#1E2A38',
+          transition: 'all 0.3s ease-in-out',
         }}
       >
-        <ul className="flex items-center gap-8 font-semibold text-lg text-white">
+        <div className="flex items-center gap-4 w-full">
           {isMobile && (
-            <li>
-              <IconButton onClick={handleDrawerToggle} sx={{ color: 'white' }}>
-                <MenuIcon />
-              </IconButton>
-            </li>
+            <IconButton onClick={handleDrawerToggle} sx={{ color: 'white' }}>
+              <MenuIcon />
+            </IconButton>
           )}
-          <li className="hover:bg-blue-600 p-2 rounded-lg transition duration-200 cursor-pointer">Home</li>
-          <li className="hover:bg-blue-600 p-2 rounded-lg transition duration-200 cursor-pointer">Products</li>
-          <li className="hover:bg-blue-600 p-2 rounded-lg transition duration-200 cursor-pointer">Cart</li>
-          <li className="hover:bg-blue-600 p-2 rounded-lg transition duration-200 cursor-pointer">Profile</li>
-        </ul>
+
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search products..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'white', opacity: 0.6 }} />
+                </InputAdornment>
+              ),
+              sx: {
+                backgroundColor: '#2B3B4B',
+                color: 'white',
+                borderRadius: '8px',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#415A77',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#6C8EBF',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#6C8EBF',
+                },
+                '& input': {
+                  color: 'white',
+                },
+              },
+            }}
+          />
+        </div>
       </div>
     </>
   );
